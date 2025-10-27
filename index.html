@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚑 우리 동네 응급의료기관 찾기</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #00acc1 0%, #00838f 100%);
+            padding: 25px;
+            text-align: center;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.95;
+        }
+
+        .controls {
+            padding: 20px;
+            background: #e0f2f1;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 3px solid #00acc1;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .control-label {
+            font-weight: bold;
+            color: #00838f;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn-radius {
+            background: white;
+            color: #00838f;
+            border: 2px solid #00acc1;
+        }
+
+        .btn-radius.active {
+            background: #00acc1;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn-primary {
+            background: #ff6f61;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .map-container {
+            position: relative;
+            height: 500px;
+            background: #f5f5f5;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #e0f2f1;
+            border-top: 5px solid #00acc1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .list-container {
+            padding: 25px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .list-header {
+            font-size: 22px;
+            font-weight: bold;
+            color: #00838f;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #00acc1;
+        }
+
+        .place-item {
+            background: #f5f5f5;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 5px solid #00acc1;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .place-item:hover {
+            background: #e0f2f1;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .place-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #00838f;
+            margin-bottom: 8px;
+        }
+
+        .place-category {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #00acc1;
+            color: white;
+            border-radius: 15px;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .place-info {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .place-distance {
+            color: #00acc1;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .place-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 13px;
+            border-radius: 8px;
+        }
+
+        .footer {
+            background: #00acc1;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .footer-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .footer-content {
+            line-height: 1.8;
+            opacity: 0.95;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 16px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #4caf50;
+            color: white;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .map-container {
+                height: 400px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚑 우리 동네 응급의료기관 찾기</h1>
+            <p>중학교 보건교과 '응급처치' 단원 연계 교육 자료</p>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <span class="control-label">🔍 검색 반경:</span>
+                <button class="btn btn-radius" onclick="changeRadius(3000)">3km</button>
+                <button class="btn btn-radius active" onclick="changeRadius(5000)">5km</button>
+                <button class="btn btn-radius" onclick="changeRadius(10000)">10km</button>
+            </div>
+            <button class="btn btn-primary" onclick="searchPlaces()">📍 내 위치에서 다시 검색</button>
+        </div>
+
+        <div class="map-container">
+            <div id="map"></div>
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <div>위치 정보를 가져오는 중...</div>
+            </div>
+        </div>
+
+        <div class="list-container">
+            <div class="list-header">📋 검색된 응급의료기관 목록 <span id="count" class="status-badge">0개</span></div>
+            <div id="placesList">
+                <div class="empty-message">위 버튼을 눌러 주변 응급의료기관을 검색해주세요.</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-title">💡 응급상황 대처법</div>
+            <div class="footer-content">
+                응급상황이 발생했을 때는 <strong>119</strong>에 신고하고, 가까운 응급의료기관을 확인하세요.<br>
+                이 지도는 학습용으로 제작되었으며, Kakao 지도 API를 활용합니다.<br>
+                실제 응급상황에서는 반드시 119에 연락하시기 바랍니다.
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=c76378cfce34b51a13162d0b2c9705c2&libraries=services,clusterer"></script>
+    <script>
+        const REST_KEY = "481144fd197c15cc2cb5b2b0b9ba2912";
+        
+        let map;
+        let currentPosition;
+        let markers = [];
+        let currentRadius = 5000;
+        let places = [];
+
+        // 지도 초기화
+        function initMap() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        currentPosition = { lat, lng };
+                        
+                        const container = document.getElementById('map');
+                        const options = {
+                            center: new kakao.maps.LatLng(lat, lng),
+                            level: 5
+                        };
+                        
+                        map = new kakao.maps.Map(container, options);
+                        
+                        // 현재 위치 마커
+                        const marker = new kakao.maps.Marker({
+                            position: new kakao.maps.LatLng(lat, lng),
+                            map: map
+                        });
+                        
+                        const infowindow = new kakao.maps.InfoWindow({
+                            content: '<div style="padding:5px;font-size:12px;">📍 현재 위치</div>'
+                        });
+                        infowindow.open(map, marker);
+                        
+                        document.getElementById('loading').style.display = 'none';
+                        
+                        // 자동으로 첫 검색 실행
+                        searchPlaces();
+                    },
+                    error => {
+                        alert('위치 정보를 가져올 수 없습니다. 위치 권한을 허용해주세요.');
+                        document.getElementById('loading').style.display = 'none';
+                    }
+                );
+            } else {
+                alert('이 브라우저는 위치 서비스를 지원하지 않습니다.');
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        // 반경 변경
+        function changeRadius(radius) {
+            currentRadius = radius;
+            document.querySelectorAll('.btn-radius').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            if (currentPosition) {
+                searchPlaces();
+            }
+        }
+
+        // 장소 검색
+        async function searchPlaces() {
+            if (!currentPosition) {
+                alert('위치 정보를 먼저 가져와주세요.');
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
+            places = [];
+            clearMarkers();
+
+            const keywords = ['응급실', '병원', '보건소'];
+            
+            for (const keyword of keywords) {
+                await searchByKeyword(keyword);
+            }
+
+            displayPlaces();
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        // 키워드별 검색
+        async function searchByKeyword(keyword) {
+            const url = `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(keyword)}&x=${currentPosition.lng}&y=${currentPosition.lat}&radius=${currentRadius}&size=15`;
+
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `KakaoAK ${REST_KEY}`
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (data.documents) {
+                    data.documents.forEach(place => {
+                        // 중복 체크
+                        if (!places.find(p => p.id === place.id)) {
+                            places.push({
+                                id: place.id,
+                                name: place.place_name,
+                                category: keyword,
+                                address: place.address_name,
+                                phone: place.phone || '전화번호 없음',
+                                x: parseFloat(place.x),
+                                y: parseFloat(place.y),
+                                distance: place.distance,
+                                place_url: place.place_url
+                            });
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('검색 오류:', error);
+            }
+        }
+
+        // 마커 초기화
+        function clearMarkers() {
+            markers.forEach(marker => marker.setMap(null));
+            markers = [];
+        }
+
+        // 장소 목록 표시
+        function displayPlaces() {
+            const listEl = document.getElementById('placesList');
+            const countEl = document.getElementById('count');
+            
+            // 거리순 정렬
+            places.sort((a, b) => parseInt(a.distance) - parseInt(b.distance));
+            
+            countEl.textContent = `${places.length}개`;
+            
+            if (places.length === 0) {
+                listEl.innerHTML = '<div class="empty-message">검색된 응급의료기관이 없습니다. 반경을 넓혀보세요.</div>';
+                return;
+            }
+
+            let html = '';
+            places.forEach((place, index) => {
+                const distance = (parseInt(place.distance) / 1000).toFixed(2);
+                
+                html += `
+                    <div class="place-item" onclick="moveToPlace(${index})">
+                        <div class="place-category">${place.category}</div>
+                        <div class="place-name">${place.name}</div>
+                        <div class="place-info">
+                            📍 ${place.address}<br>
+                            ☎️ ${place.phone}
+                        </div>
+                        <div class="place-distance">📏 거리: ${distance}km</div>
+                        <div class="place-actions">
+                            <button class="btn btn-primary btn-small" onclick="event.stopPropagation(); window.open('${place.place_url}', '_blank')">
+                                🗺️ 카카오맵에서 보기
+                            </button>
+                            <button class="btn btn-small" style="background:#4caf50;color:white;" onclick="event.stopPropagation(); openNavigation(${place.y}, ${place.x})">
+                                🚗 길찾기
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                // 지도에 마커 추가
+                const position = new kakao.maps.LatLng(place.y, place.x);
+                const marker = new kakao.maps.Marker({
+                    position: position,
+                    map: map
+                });
+
+                const infowindow = new kakao.maps.InfoWindow({
+                    content: `<div style="padding:10px;font-size:13px;white-space:nowrap;"><strong>${place.name}</strong><br>${place.category}</div>`
+                });
+
+                kakao.maps.event.addListener(marker, 'click', function() {
+                    infowindow.open(map, marker);
+                    map.setCenter(position);
+                });
+
+                markers.push(marker);
+            });
+
+            listEl.innerHTML = html;
+        }
+
+        // 특정 장소로 이동
+        function moveToPlace(index) {
+            const place = places[index];
+            const position = new kakao.maps.LatLng(place.y, place.x);
+            map.setCenter(position);
+            map.setLevel(3);
+            
+            // 해당 마커의 인포윈도우 열기
+            kakao.maps.event.trigger(markers[index], 'click');
+        }
+
+        // 길찾기
+        function openNavigation(lat, lng) {
+            const url = `https://map.kakao.com/link/to/목적지,${lat},${lng}`;
+            window.open(url, '_blank');
+        }
+
+        // 페이지 로드 시 지도 초기화
+        window.onload = function() {
+            // Kakao Maps API가 로드되었는지 확인
+            if (typeof kakao !== 'undefined' && kakao.maps) {
+                initMap();
+            } else {
+                document.getElementById('loading').innerHTML = `
+                    <div>⚠️ Kakao Maps API 키를 설정해주세요.</div>
+                    <div style="margin-top:15px;font-size:14px;line-height:1.6;">
+                        1. <a href="https://developers.kakao.com" target="_blank" style="color:#00acc1;font-weight:bold;">developers.kakao.com</a>에서 앱 등록<br>
+                        2. JavaScript 키와 REST API 키 발급<br>
+                        3. HTML 파일의 YOUR_JAVASCRIPT_KEY_HERE와<br>
+                        YOUR_REST_API_KEY_HERE를 교체하세요.
+                    </div>
+                `;
+            }
+        };
+    </script>
+</body>
+</html>
