@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚑 우리 동네 응급의료기관 찾기</title>
+    <title>🏥 건강 자원 찾기</title>
     <style>
         * {
             margin: 0;
@@ -24,6 +24,58 @@
             border-radius: 20px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.15);
             overflow: hidden;
+        }
+
+        /* 탭 네비게이션 */
+        .tab-navigation {
+            background: linear-gradient(135deg, #00838f 0%, #006064 100%);
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .tab-button {
+            background: transparent;
+            color: rgba(255,255,255,0.8);
+            border: none;
+            padding: 20px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .tab-button:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .tab-button.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #00e5ff;
+        }
+
+        /* 페이지 컨텐츠 */
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
         }
 
         .header {
@@ -55,18 +107,6 @@
             border-bottom: 3px solid #00acc1;
         }
 
-        .control-group {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .control-label {
-            font-weight: bold;
-            color: #00838f;
-            font-size: 14px;
-        }
-
         .btn {
             padding: 12px 24px;
             border: none;
@@ -76,19 +116,6 @@
             cursor: pointer;
             transition: all 0.2s;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .btn-radius {
-            background: white;
-            color: #00838f;
-            border: 2px solid #00acc1;
-        }
-
-        .btn-radius.active {
-            background: #00acc1;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
 
         .btn-primary {
@@ -101,17 +128,13 @@
             box-shadow: 0 6px 12px rgba(0,0,0,0.2);
         }
 
-        .btn:active {
-            transform: translateY(0);
-        }
-
         .map-container {
             position: relative;
             height: 500px;
             background: #f5f5f5;
         }
 
-        #map {
+        .map {
             width: 100%;
             height: 100%;
         }
@@ -126,6 +149,7 @@
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
         }
 
         .loading-spinner {
@@ -250,7 +274,109 @@
             margin-left: 10px;
         }
 
+        /* 게임 페이지 스타일 */
+        .game-container {
+            padding: 40px;
+            text-align: center;
+        }
+
+        .game-title {
+            font-size: 36px;
+            color: #00838f;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .game-description {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .game-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .game-card {
+            background: linear-gradient(135deg, #fff 0%, #f5f5f5 100%);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 3px solid transparent;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            border-color: #00acc1;
+        }
+
+        .game-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .game-card-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #00838f;
+            margin-bottom: 10px;
+        }
+
+        .game-card-desc {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .quiz-section {
+            background: #e0f2f1;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .quiz-title {
+            font-size: 24px;
+            color: #00838f;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .quiz-btn {
+            background: #00acc1;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .quiz-btn:hover {
+            background: #00838f;
+        }
+
         @media (max-width: 768px) {
+            .tab-button {
+                padding: 15px 10px;
+                font-size: 14px;
+            }
+
             .header h1 {
                 font-size: 24px;
             }
@@ -263,51 +389,149 @@
                 height: 400px;
             }
 
-            .btn {
-                padding: 10px 20px;
-                font-size: 14px;
+            .game-cards {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🚑 우리 동네 응급의료기관 찾기</h1>
-            <p>중학교 보건교과 '응급처치' 단원 연계 교육 자료</p>
+        <!-- 탭 네비게이션 -->
+        <div class="tab-navigation">
+            <button class="tab-button active" onclick="showPage('game')">🎮 건강 자원 찾기 게임</button>
+            <button class="tab-button" onclick="showPage('physical')">🏥 물적 건강 자원 찾기</button>
+            <button class="tab-button" onclick="showPage('social')">🤝 사회적 건강 자원 찾기</button>
         </div>
 
-        <div class="controls">
-            <div class="control-group">
-                <span class="control-label">🔍 검색 반경:</span>
-                <button class="btn btn-radius" onclick="changeRadius(3000)">3km</button>
-                <button class="btn btn-radius active" onclick="changeRadius(5000)">5km</button>
-                <button class="btn btn-radius" onclick="changeRadius(10000)">10km</button>
+        <!-- 건강 자원 찾기 게임 페이지 -->
+        <div id="game-page" class="page-content active">
+            <div class="game-container">
+                <h1 class="game-title">🎯 건강 자원 찾기 게임</h1>
+                <p class="game-description">
+                    우리 주변의 건강 자원을 찾아보고, 올바른 활용법을 배워봅시다!<br>
+                    건강한 삶을 위해 필요한 다양한 자원들을 게임을 통해 재미있게 알아보세요.
+                </p>
+
+                <div class="game-cards">
+                    <div class="game-card" onclick="showPage('physical')">
+                        <div class="game-icon">🏥</div>
+                        <div class="game-card-title">물적 건강 자원</div>
+                        <div class="game-card-desc">
+                            병원, 응급실, 보건소 등<br>
+                            의료 서비스를 제공하는 기관들을<br>
+                            찾아보세요!
+                        </div>
+                    </div>
+
+                    <div class="game-card" onclick="showPage('social')">
+                        <div class="game-icon">🤝</div>
+                        <div class="game-card-title">사회적 건강 자원</div>
+                        <div class="game-card-desc">
+                            해바라기센터, 청소년성문화센터,<br>
+                            정신건강복지센터 등 심리·사회적<br>
+                            지원 기관들을 찾아보세요!
+                        </div>
+                    </div>
+
+                    <div class="game-card" onclick="startQuiz()">
+                        <div class="game-icon">📝</div>
+                        <div class="game-card-title">건강 자원 퀴즈</div>
+                        <div class="game-card-desc">
+                            건강 자원에 대한<br>
+                            여러분의 지식을<br>
+                            테스트해보세요!
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-section" id="quiz-section" style="display:none;">
+                    <h2 class="quiz-title">🧠 건강 자원 OX 퀴즈</h2>
+                    <div id="quiz-content"></div>
+                    <button class="quiz-btn" onclick="checkQuiz()">정답 확인하기</button>
+                </div>
             </div>
-            <button class="btn btn-primary" onclick="searchPlaces()">📍 내 위치에서 다시 검색</button>
-        </div>
 
-        <div class="map-container">
-            <div id="map"></div>
-            <div class="loading" id="loading">
-                <div class="loading-spinner"></div>
-                <div>위치 정보를 가져오는 중...</div>
+            <div class="footer">
+                <div class="footer-title">💡 학습 목표</div>
+                <div class="footer-content">
+                    • 우리 지역의 건강 자원을 파악하고 활용 방법을 익힙니다.<br>
+                    • 응급 상황 시 적절한 대처 방법을 학습합니다.<br>
+                    • 정신건강과 사회적 지원 체계의 중요성을 이해합니다.
+                </div>
             </div>
         </div>
 
-        <div class="list-container">
-            <div class="list-header">📋 검색된 응급의료기관 목록 <span id="count" class="status-badge">0개</span></div>
-            <div id="placesList">
-                <div class="empty-message">위 버튼을 눌러 주변 응급의료기관을 검색해주세요.</div>
+        <!-- 물적 건강 자원 찾기 페이지 -->
+        <div id="physical-page" class="page-content">
+            <div class="header">
+                <h1>🏥 물적 건강 자원 찾기</h1>
+                <p>우리 동네 응급의료기관 및 보건의료시설 찾기</p>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-primary" onclick="searchPhysicalPlaces()">📍 내 위치에서 검색하기</button>
+            </div>
+
+            <div class="map-container">
+                <div id="physical-map" class="map"></div>
+                <div class="loading" id="physical-loading" style="display:none;">
+                    <div class="loading-spinner"></div>
+                    <div>위치 정보를 가져오는 중...</div>
+                </div>
+            </div>
+
+            <div class="list-container">
+                <div class="list-header">📋 검색된 의료기관 목록 <span id="physical-count" class="status-badge">0개</span></div>
+                <div id="physical-placesList">
+                    <div class="empty-message">위 버튼을 눌러 주변 의료기관을 검색해주세요.</div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div class="footer-title">💡 응급상황 대처법</div>
+                <div class="footer-content">
+                    응급상황이 발생했을 때는 <strong>119</strong>에 신고하고, 가까운 응급의료기관을 확인하세요.<br>
+                    병원 이용 시 증상을 정확히 설명하고, 필요한 서류를 준비하세요.<br>
+                    실제 응급상황에서는 반드시 119에 연락하시기 바랍니다.
+                </div>
             </div>
         </div>
 
-        <div class="footer">
-            <div class="footer-title">💡 응급상황 대처법</div>
-            <div class="footer-content">
-                응급상황이 발생했을 때는 <strong>119</strong>에 신고하고, 가까운 응급의료기관을 확인하세요.<br>
-                이 지도는 학습용으로 제작되었으며, Kakao 지도 API를 활용합니다.<br>
-                실제 응급상황에서는 반드시 119에 연락하시기 바랍니다.
+        <!-- 사회적 건강 자원 찾기 페이지 -->
+        <div id="social-page" class="page-content">
+            <div class="header">
+                <h1>🤝 사회적 건강 자원 찾기</h1>
+                <p>우리 동네 심리·사회 지원 기관 찾기</p>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-primary" onclick="searchSocialPlaces()">📍 내 위치에서 검색하기</button>
+            </div>
+
+            <div class="map-container">
+                <div id="social-map" class="map"></div>
+                <div class="loading" id="social-loading" style="display:none;">
+                    <div class="loading-spinner"></div>
+                    <div>위치 정보를 가져오는 중...</div>
+                </div>
+            </div>
+
+            <div class="list-container">
+                <div class="list-header">📋 검색된 지원기관 목록 <span id="social-count" class="status-badge">0개</span></div>
+                <div id="social-placesList">
+                    <div class="empty-message">위 버튼을 눌러 주변 지원기관을 검색해주세요.</div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div class="footer-title">💡 사회적 건강 자원 이용 안내</div>
+                <div class="footer-content">
+                    <strong>해바라기센터</strong>: 성폭력·가정폭력 피해자 지원 (국번없이 1366)<br>
+                    <strong>청소년성문화센터</strong>: 청소년 성교육 및 상담 지원<br>
+                    <strong>정신건강복지센터</strong>: 정신건강 상담 및 치료 연계 (정신건강 위기상담 1577-0199)<br>
+                    도움이 필요할 때 주저하지 말고 연락하세요. 모든 상담은 비밀이 보장됩니다.
+                </div>
             </div>
         </div>
     </div>
@@ -316,93 +540,181 @@
     <script>
         const REST_KEY = "481144fd197c15cc2cb5b2b0b9ba2912";
         
-        let map;
+        let physicalMap, socialMap;
         let currentPosition;
-        let markers = [];
-        let currentRadius = 5000;
-        let places = [];
+        let physicalMarkers = [];
+        let socialMarkers = [];
+        let physicalPlaces = [];
+        let socialPlaces = [];
+        const searchRadius = 10000; // 10km 고정
 
-        // 지도 초기화
-        function initMap() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    position => {
-                        const lat = position.coords.latitude;
-                        const lng = position.coords.longitude;
-                        currentPosition = { lat, lng };
-                        
-                        const container = document.getElementById('map');
-                        const options = {
-                            center: new kakao.maps.LatLng(lat, lng),
-                            level: 5
-                        };
-                        
-                        map = new kakao.maps.Map(container, options);
-                        
-                        // 현재 위치 마커
-                        const marker = new kakao.maps.Marker({
-                            position: new kakao.maps.LatLng(lat, lng),
-                            map: map
-                        });
-                        
-                        const infowindow = new kakao.maps.InfoWindow({
-                            content: '<div style="padding:5px;font-size:12px;">📍 현재 위치</div>'
-                        });
-                        infowindow.open(map, marker);
-                        
-                        document.getElementById('loading').style.display = 'none';
-                        
-                        // 자동으로 첫 검색 실행
-                        searchPlaces();
-                    },
-                    error => {
-                        alert('위치 정보를 가져올 수 없습니다. 위치 권한을 허용해주세요.');
-                        document.getElementById('loading').style.display = 'none';
-                    }
-                );
-            } else {
-                alert('이 브라우저는 위치 서비스를 지원하지 않습니다.');
-                document.getElementById('loading').style.display = 'none';
-            }
-        }
-
-        // 반경 변경
-        function changeRadius(radius) {
-            currentRadius = radius;
-            document.querySelectorAll('.btn-radius').forEach(btn => {
+        // 페이지 전환 함수
+        function showPage(pageName) {
+            // 모든 페이지 숨기기
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // 모든 탭 버튼 비활성화
+            document.querySelectorAll('.tab-button').forEach(btn => {
                 btn.classList.remove('active');
             });
+            
+            // 선택된 페이지 보이기
+            document.getElementById(`${pageName}-page`).classList.add('active');
+            
+            // 선택된 탭 활성화
             event.target.classList.add('active');
             
-            if (currentPosition) {
-                searchPlaces();
+            // 지도 초기화 (필요한 경우)
+            if (pageName === 'physical' && !physicalMap) {
+                initPhysicalMap();
+            } else if (pageName === 'social' && !socialMap) {
+                initSocialMap();
             }
         }
 
-        // 장소 검색
-        async function searchPlaces() {
-            if (!currentPosition) {
-                alert('위치 정보를 먼저 가져와주세요.');
-                return;
+        // 현재 위치 가져오기
+        function getCurrentPosition() {
+            return new Promise((resolve, reject) => {
+                if (!currentPosition) {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(
+                            position => {
+                                currentPosition = {
+                                    lat: position.coords.latitude,
+                                    lng: position.coords.longitude
+                                };
+                                resolve(currentPosition);
+                            },
+                            error => {
+                                alert('위치 정보를 가져올 수 없습니다. 위치 권한을 허용해주세요.');
+                                reject(error);
+                            }
+                        );
+                    } else {
+                        alert('이 브라우저는 위치 서비스를 지원하지 않습니다.');
+                        reject();
+                    }
+                } else {
+                    resolve(currentPosition);
+                }
+            });
+        }
+
+        // 물적 건강 자원 지도 초기화
+        async function initPhysicalMap() {
+            try {
+                const pos = await getCurrentPosition();
+                const container = document.getElementById('physical-map');
+                const options = {
+                    center: new kakao.maps.LatLng(pos.lat, pos.lng),
+                    level: 5
+                };
+                
+                physicalMap = new kakao.maps.Map(container, options);
+                
+                // 현재 위치 마커
+                const marker = new kakao.maps.Marker({
+                    position: new kakao.maps.LatLng(pos.lat, pos.lng),
+                    map: physicalMap
+                });
+                
+                const infowindow = new kakao.maps.InfoWindow({
+                    content: '<div style="padding:5px;font-size:12px;">📍 현재 위치</div>'
+                });
+                infowindow.open(physicalMap, marker);
+            } catch (error) {
+                console.error('지도 초기화 실패:', error);
             }
+        }
 
-            document.getElementById('loading').style.display = 'block';
-            places = [];
-            clearMarkers();
+        // 사회적 건강 자원 지도 초기화
+        async function initSocialMap() {
+            try {
+                const pos = await getCurrentPosition();
+                const container = document.getElementById('social-map');
+                const options = {
+                    center: new kakao.maps.LatLng(pos.lat, pos.lng),
+                    level: 5
+                };
+                
+                socialMap = new kakao.maps.Map(container, options);
+                
+                // 현재 위치 마커
+                const marker = new kakao.maps.Marker({
+                    position: new kakao.maps.LatLng(pos.lat, pos.lng),
+                    map: socialMap
+                });
+                
+                const infowindow = new kakao.maps.InfoWindow({
+                    content: '<div style="padding:5px;font-size:12px;">📍 현재 위치</div>'
+                });
+                infowindow.open(socialMap, marker);
+            } catch (error) {
+                console.error('지도 초기화 실패:', error);
+            }
+        }
 
-            const keywords = ['응급실', '병원', '보건소'];
+        // 물적 건강 자원 검색
+        async function searchPhysicalPlaces() {
+            document.getElementById('physical-loading').style.display = 'block';
             
-            for (const keyword of keywords) {
-                await searchByKeyword(keyword);
-            }
+            try {
+                const pos = await getCurrentPosition();
+                
+                if (!physicalMap) {
+                    await initPhysicalMap();
+                }
+                
+                physicalPlaces = [];
+                clearMarkers(physicalMarkers);
 
-            displayPlaces();
-            document.getElementById('loading').style.display = 'none';
+                const keywords = ['응급실', '병원', '보건소', '약국'];
+                
+                for (const keyword of keywords) {
+                    await searchByKeyword(keyword, 'physical');
+                }
+
+                displayPlaces('physical');
+            } catch (error) {
+                console.error('검색 오류:', error);
+            } finally {
+                document.getElementById('physical-loading').style.display = 'none';
+            }
+        }
+
+        // 사회적 건강 자원 검색
+        async function searchSocialPlaces() {
+            document.getElementById('social-loading').style.display = 'block';
+            
+            try {
+                const pos = await getCurrentPosition();
+                
+                if (!socialMap) {
+                    await initSocialMap();
+                }
+                
+                socialPlaces = [];
+                clearMarkers(socialMarkers);
+
+                const keywords = ['해바라기센터', '청소년성문화센터', '정신건강복지센터', '청소년상담복지센터', '가족센터'];
+                
+                for (const keyword of keywords) {
+                    await searchByKeyword(keyword, 'social');
+                }
+
+                displayPlaces('social');
+            } catch (error) {
+                console.error('검색 오류:', error);
+            } finally {
+                document.getElementById('social-loading').style.display = 'none';
+            }
         }
 
         // 키워드별 검색
-        async function searchByKeyword(keyword) {
-            const url = `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(keyword)}&x=${currentPosition.lng}&y=${currentPosition.lat}&radius=${currentRadius}&size=15`;
+        async function searchByKeyword(keyword, type) {
+            const url = `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent(keyword)}&x=${currentPosition.lng}&y=${currentPosition.lat}&radius=${searchRadius}&size=15`;
 
             try {
                 const response = await fetch(url, {
@@ -412,12 +724,13 @@
                 });
 
                 const data = await response.json();
+                const targetArray = type === 'physical' ? physicalPlaces : socialPlaces;
                 
                 if (data.documents) {
                     data.documents.forEach(place => {
                         // 중복 체크
-                        if (!places.find(p => p.id === place.id)) {
-                            places.push({
+                        if (!targetArray.find(p => p.id === place.id)) {
+                            targetArray.push({
                                 id: place.id,
                                 name: place.place_name,
                                 category: keyword,
@@ -437,15 +750,18 @@
         }
 
         // 마커 초기화
-        function clearMarkers() {
+        function clearMarkers(markers) {
             markers.forEach(marker => marker.setMap(null));
-            markers = [];
+            markers.length = 0;
         }
 
         // 장소 목록 표시
-        function displayPlaces() {
-            const listEl = document.getElementById('placesList');
-            const countEl = document.getElementById('count');
+        function displayPlaces(type) {
+            const places = type === 'physical' ? physicalPlaces : socialPlaces;
+            const listEl = document.getElementById(`${type}-placesList`);
+            const countEl = document.getElementById(`${type}-count`);
+            const map = type === 'physical' ? physicalMap : socialMap;
+            const markers = type === 'physical' ? physicalMarkers : socialMarkers;
             
             // 거리순 정렬
             places.sort((a, b) => parseInt(a.distance) - parseInt(b.distance));
@@ -453,7 +769,7 @@
             countEl.textContent = `${places.length}개`;
             
             if (places.length === 0) {
-                listEl.innerHTML = '<div class="empty-message">검색된 응급의료기관이 없습니다. 반경을 넓혀보세요.</div>';
+                listEl.innerHTML = '<div class="empty-message">검색된 기관이 없습니다.</div>';
                 return;
             }
 
@@ -462,7 +778,7 @@
                 const distance = (parseInt(place.distance) / 1000).toFixed(2);
                 
                 html += `
-                    <div class="place-item" onclick="moveToPlace(${index})">
+                    <div class="place-item" onclick="moveToPlace('${type}', ${index})">
                         <div class="place-category">${place.category}</div>
                         <div class="place-name">${place.name}</div>
                         <div class="place-info">
@@ -504,7 +820,11 @@
         }
 
         // 특정 장소로 이동
-        function moveToPlace(index) {
+        function moveToPlace(type, index) {
+            const places = type === 'physical' ? physicalPlaces : socialPlaces;
+            const map = type === 'physical' ? physicalMap : socialMap;
+            const markers = type === 'physical' ? physicalMarkers : socialMarkers;
+            
             const place = places[index];
             const position = new kakao.maps.LatLng(place.y, place.x);
             map.setCenter(position);
@@ -520,21 +840,67 @@
             window.open(url, '_blank');
         }
 
-        // 페이지 로드 시 지도 초기화
-        window.onload = function() {
-            // Kakao Maps API가 로드되었는지 확인
-            if (typeof kakao !== 'undefined' && kakao.maps) {
-                initMap();
-            } else {
-                document.getElementById('loading').innerHTML = `
-                    <div>⚠️ Kakao Maps API 키를 설정해주세요.</div>
-                    <div style="margin-top:15px;font-size:14px;line-height:1.6;">
-                        1. <a href="https://developers.kakao.com" target="_blank" style="color:#00acc1;font-weight:bold;">developers.kakao.com</a>에서 앱 등록<br>
-                        2. JavaScript 키와 REST API 키 발급<br>
-                        3. HTML 파일의 YOUR_JAVASCRIPT_KEY_HERE와<br>
-                        YOUR_REST_API_KEY_HERE를 교체하세요.
+        // 퀴즈 시작
+        function startQuiz() {
+            const quizSection = document.getElementById('quiz-section');
+            const quizContent = document.getElementById('quiz-content');
+            
+            quizSection.style.display = 'block';
+            
+            const questions = [
+                { q: "응급상황이 발생하면 119에 신고해야 한다.", a: "O" },
+                { q: "보건소는 예방접종만 할 수 있다.", a: "X" },
+                { q: "해바라기센터는 성폭력 피해자를 지원하는 기관이다.", a: "O" },
+                { q: "정신건강 상담은 비밀이 보장된다.", a: "O" },
+                { q: "약국에서는 처방전 없이 모든 약을 살 수 있다.", a: "X" }
+            ];
+            
+            let html = '';
+            questions.forEach((q, i) => {
+                html += `
+                    <div class="quiz-question">
+                        <strong>Q${i+1}.</strong> ${q.q}
+                        <div style="margin-top:10px;">
+                            <label style="margin-right:20px;">
+                                <input type="radio" name="q${i}" value="O"> O
+                            </label>
+                            <label>
+                                <input type="radio" name="q${i}" value="X"> X
+                            </label>
+                        </div>
+                        <input type="hidden" id="answer${i}" value="${q.a}">
                     </div>
                 `;
+            });
+            
+            quizContent.innerHTML = html;
+            
+            // 스크롤 이동
+            quizSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 퀴즈 정답 확인
+        function checkQuiz() {
+            let score = 0;
+            let total = 5;
+            
+            for (let i = 0; i < total; i++) {
+                const userAnswer = document.querySelector(`input[name="q${i}"]:checked`);
+                const correctAnswer = document.getElementById(`answer${i}`).value;
+                
+                if (userAnswer && userAnswer.value === correctAnswer) {
+                    score++;
+                }
+            }
+            
+            alert(`정답: ${score}/${total}개!\n${score === total ? '완벽해요! 🎉' : score >= 3 ? '잘했어요! 👍' : '다시 한번 공부해봐요! 💪'}`);
+        }
+
+        // 페이지 로드 시 초기화
+        window.onload = function() {
+            // Kakao Maps API가 로드되었는지 확인
+            if (typeof kakao === 'undefined' || !kakao.maps) {
+                alert('Kakao Maps API를 로드할 수 없습니다. API 키를 확인해주세요.');
             }
         };
     </script>
