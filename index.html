@@ -39,14 +39,17 @@
             background: transparent;
             color: rgba(255,255,255,0.8);
             border: none;
-            padding: 20px 30px;
-            font-size: 16px;
+            padding: 20px 20px; /* 패딩 조정 */
+            font-size: 15px; /* 폰트 크기 조정 */
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
             position: relative;
             flex: 1;
             max-width: 300px;
+            white-space: nowrap; /* 탭 제목 줄 바꿈 방지 */
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .tab-button:hover {
@@ -94,6 +97,27 @@
         .header p {
             font-size: 16px;
             opacity: 0.95;
+        }
+
+        /* Looker Studio 임베드를 위한 반응형 컨테이너 */
+        .iframe-responsive-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 비율 (높이/폭) * 100 */
+            height: 0;
+            overflow: hidden;
+            background-color: #f0f0f0; /* 로딩 중 배경색 */
+            margin: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .iframe-responsive-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
         }
 
         .controls {
@@ -374,7 +398,8 @@
         @media (max-width: 768px) {
             .tab-button {
                 padding: 15px 10px;
-                font-size: 14px;
+                font-size: 12px; /* 모바일에서 폰트 크기 더 줄임 */
+                max-width: 25%; /* 탭 4개 일 때 25% */
             }
 
             .header h1 {
@@ -397,14 +422,13 @@
 </head>
 <body>
     <div class="container">
-        <!-- 탭 네비게이션 -->
         <div class="tab-navigation">
-            <button class="tab-button active" onclick="showPage('game')">🎮 건강 자원 찾기 게임</button>
-            <button class="tab-button" onclick="showPage('physical')">🏥 물적 건강 자원 찾기</button>
-            <button class="tab-button" onclick="showPage('social')">🤝 사회적 건강 자원 찾기</button>
+            <button class="tab-button active" onclick="showPage('game', this)">🎮 건강 자원 찾기</button>
+            <button class="tab-button" onclick="showPage('physical', this)">🏥 물적 건강 자원 찾기</button>
+            <button class="tab-button" onclick="showPage('social', this)">🤝 사회적 건강 자원 찾기</button>
+            <button class="tab-button" onclick="showPage('public-health', this)">📊 건강 자원 현황</button>
         </div>
 
-        <!-- 건강 자원 찾기 게임 페이지 -->
         <div id="game-page" class="page-content active">
             <div class="game-container">
                 <h1 class="game-title">🎯 건강 자원 찾기 게임</h1>
@@ -414,7 +438,7 @@
                 </p>
 
                 <div class="game-cards">
-                    <div class="game-card" onclick="showPage('physical')">
+                    <div class="game-card" onclick="document.querySelector('.tab-button:nth-child(2)').click()">
                         <div class="game-icon">🏥</div>
                         <div class="game-card-title">물적 건강 자원</div>
                         <div class="game-card-desc">
@@ -424,13 +448,23 @@
                         </div>
                     </div>
 
-                    <div class="game-card" onclick="showPage('social')">
+                    <div class="game-card" onclick="document.querySelector('.tab-button:nth-child(3)').click()">
                         <div class="game-icon">🤝</div>
                         <div class="game-card-title">사회적 건강 자원</div>
                         <div class="game-card-desc">
                             해바라기센터, 청소년성문화센터,<br>
                             정신건강복지센터 등 심리·사회적<br>
                             지원 기관들을 찾아보세요!
+                        </div>
+                    </div>
+                    
+                    <div class="game-card" onclick="document.querySelector('.tab-button:nth-child(4)').click()">
+                        <div class="game-icon">📊</div>
+                        <div class="game-card-title">공공의료 현황</div>
+                        <div class="game-card-desc">
+                            전국 공공의료기관의<br>
+                            분포 현황을 대시보드로<br>
+                            확인해보세요!
                         </div>
                     </div>
 
@@ -462,7 +496,6 @@
             </div>
         </div>
 
-        <!-- 물적 건강 자원 찾기 페이지 -->
         <div id="physical-page" class="page-content">
             <div class="header">
                 <h1>🏥 물적 건강 자원 찾기</h1>
@@ -498,7 +531,6 @@
             </div>
         </div>
 
-        <!-- 사회적 건강 자원 찾기 페이지 -->
         <div id="social-page" class="page-content">
             <div class="header">
                 <h1>🤝 사회적 건강 자원 찾기</h1>
@@ -534,7 +566,31 @@
                 </div>
             </div>
         </div>
-    </div>
+        
+        <div id="public-health-page" class="page-content">
+            <div class="header">
+                <h1>📊 건강 자원 현황 - 전국 공공의료기관 분포</h1>
+                <p>Looker Studio 대시보드를 통해 전국 공공의료기관의 분포를 확인해보세요.</p>
+            </div>
+
+            <div class="iframe-responsive-container">
+                <iframe 
+                    src="https://lookerstudio.google.com/embed/reporting/jrb42BbwmB/page/rC6dD" 
+                    frameborder="0" 
+                    style="border:0" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+
+            <div class="footer">
+                <div class="footer-title">🔗 데이터 출처</div>
+                <div class="footer-content">
+                    본 데이터는 Looker Studio를 통해 시각화되었으며, 데이터의 상세 내용은 원본 보고서를 참고하세요.<br>
+                    Looker Studio는 반응형 기능을 지원하므로, 화면 크기에 맞게 지도가 조정됩니다.
+                </div>
+            </div>
+        </div>
+        </div>
 
     <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=c76378cfce34b51a13162d0b2c9705c2&libraries=services,clusterer"></script>
     <script>
@@ -548,8 +604,8 @@
         let socialPlaces = [];
         const searchRadius = 10000; // 10km 고정
 
-        // 페이지 전환 함수
-        function showPage(pageName) {
+        // 페이지 전환 함수 (수정: 탭 버튼 객체를 인수로 받도록 변경)
+        function showPage(pageName, buttonElement) {
             // 모든 페이지 숨기기
             document.querySelectorAll('.page-content').forEach(page => {
                 page.classList.remove('active');
@@ -563,8 +619,13 @@
             // 선택된 페이지 보이기
             document.getElementById(`${pageName}-page`).classList.add('active');
             
-            // 선택된 탭 활성화
-            event.target.classList.add('active');
+            // 선택된 탭 활성화 (인수로 받은 버튼 사용)
+            if (buttonElement) {
+                buttonElement.classList.add('active');
+            } else {
+                // 게임 페이지 카드 클릭 등으로 호출 시 해당 탭을 활성화
+                document.querySelector(`.tab-button[onclick*="showPage('${pageName}'"]`).classList.add('active');
+            }
             
             // 지도 초기화 (필요한 경우)
             if (pageName === 'physical' && !physicalMap) {
@@ -574,6 +635,8 @@
             }
         }
 
+        // ... (이하 모든 기존 JavaScript 함수는 변경 없이 그대로 유지됩니다.)
+        
         // 현재 위치 가져오기
         function getCurrentPosition() {
             return new Promise((resolve, reject) => {
@@ -900,8 +963,11 @@
         window.onload = function() {
             // Kakao Maps API가 로드되었는지 확인
             if (typeof kakao === 'undefined' || !kakao.maps) {
-                alert('Kakao Maps API를 로드할 수 없습니다. API 키를 확인해주세요.');
+                console.error('Kakao Maps API를 로드할 수 없습니다. API 키를 확인해주세요.');
             }
+            
+            // 초기 페이지 로드 시 첫 번째 탭 (게임 페이지) 활성화
+            // 기존 코드에서 이미 game-page가 active로 되어 있으므로 별도 showPage 호출 불필요
         };
     </script>
 </body>
